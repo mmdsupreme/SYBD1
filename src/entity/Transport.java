@@ -27,10 +27,10 @@ public class Transport {
 	}
 
 	public Transport(String gosnumber, String type, int tourfirmaid,
-			int tourid) {
+			int routeid) {
 		this.gosnumber = gosnumber;
 		this.type = type;
-		this.tourid = tourid;
+		this.tourid = routeid;
 		this.tourfirmaid = tourfirmaid;
 	}
 
@@ -60,56 +60,33 @@ public class Transport {
 	public void addElement(String gosnumber, String type, int tourfirmaid,
 			int tourid, Connection connection) throws SQLException {
 		Statement stmt = null;
-		try {
-			stmt = connection.createStatement();
-			stmt.executeUpdate("insert into transport values(nextval('transport_id_seq'),'"
-					+ gosnumber
-					+ "', '"
-					+ type
-					+ "', "
-					+ tourfirmaid
-					+ ", " + tourid + ");");
-		} catch (Exception e) {
-			throw new SQLException();
-		} finally {
-			if (stmt != null) {
-				stmt.close();
-			}
-		}
+		stmt = connection.createStatement();
+		stmt.executeUpdate("insert into transport values(nextval('transport_id_seq'),'"
+				+ gosnumber
+				+ "', '"
+				+ type
+				+ "', "
+				+ tourfirmaid
+				+ ", "
+				+ tourid + ");");
 	}
 
 	public void removeElement(int id, Connection connection)
 			throws SQLException {
 		Statement stmt = null;
-		try {
-			stmt = connection.createStatement();
-			stmt.executeUpdate("delete from transport where id = " + id + ";");
-		} catch (SQLException e) {
-			throw new SQLException();
-		} finally {
-			if (stmt != null) {
-				stmt.close();
-			}
-		}
+		stmt = connection.createStatement();
+		stmt.executeUpdate("delete from transport where id = " + id + ";");
 	}
 
 	public void refreshElement(int id, String gosnumber, String type,
 			int tourfirmaid, int tourid, Connection connection)
 			throws SQLException {
 		Statement stmt = null;
-		try {
-			stmt = connection.createStatement();
-			stmt.executeUpdate("update transport set " + "gosnumber = '"
-					+ gosnumber + "',type = '" + type
-					+ "', tourfirmaid = " + tourfirmaid
-					+ ", tourid = " + tourid + " where id = " + id + ";");
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,e.getMessage());
-		} finally {
-			if (stmt != null) {
-				stmt.close();
-			}
-		}
+		stmt = connection.createStatement();
+		stmt.executeUpdate("update transport set " + "gosnumber = '"
+				+ gosnumber + "',type = '" + type + "', tourfirmaid = "
+				+ tourfirmaid + ", tourid = " + tourid + " where id = "
+				+ id + ";");
 	}
 
 	public DefaultTableModel TableModel(Connection connection)
@@ -118,8 +95,9 @@ public class Transport {
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		DefaultTableModel tableModel = new DefaultTableModel();
 		columnNames = getTitles();
-		for (int i = 0; i <= getTable(connection).size() - 1; i++) {
-			data.add(getTable(connection).get(i).setData(connection));
+		ArrayList<Transport> transports = getTable(connection);
+		for (int i = 0; i <= transports.size() - 1; i++) {
+			data.add(transports.get(i).setData(connection));
 		}
 		tableModel.setDataVector(data, columnNames);
 		return tableModel;
@@ -128,7 +106,7 @@ public class Transport {
 	public Vector<String> getTitles() {
 		Vector<String> columnNames = new Vector<String>();
 		columnNames.add("id");
-		columnNames.add("номер");
+		columnNames.add("Гос номер");
 		columnNames.add("Тип");
 		columnNames.add("Турфирма");
 		columnNames.add("Тур");
@@ -148,6 +126,40 @@ public class Transport {
 		return res;
 	}
 
+	public void add10k(Connection connection) throws SQLException {
+		Statement stmt = connection.createStatement();
+		Transport t = new Transport();
+		int id = t.getTable(connection).size() + 1;
+		for (int i = 0; i < 10000; i++, id++) {
+			stmt.executeUpdate("insert into transport values(" + id
+					+ ",'test', 'test', 1, 1);");
+		}
+	}
+
+	public void delete10k(Connection connection) throws SQLException {
+		Statement stmt = connection.createStatement();
+		Transport t = new Transport();
+		int id = t.getTable(connection).size();
+		for (int i = 0; id > 0 && i < 10000; id--, i++) {
+			stmt.executeUpdate("delete from transport where id = " + id + ";");
+		}
+	}
+
+	public void createIndex(Connection connection) throws SQLException {
+		clearIndex(connection);
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("create index tourid_ind_t on transport (tourid);");
+		stmt.executeUpdate("create index tourfirmaid_ind on transport (tourfirmaid);");
+		stmt.close();
+	}
+
+	public void clearIndex(Connection connection) throws SQLException {
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("drop index tourid_ind_t;");
+		stmt.executeUpdate("drop index tourfirmaid_ind);");
+		stmt.close();
+	}
+
 	public int getId() {
 		return this.id;
 	}
@@ -164,7 +176,7 @@ public class Transport {
 		return type;
 	}
 
-	public int getRouteid() {
+	public int getTourid() {
 		return tourid;
 	}
 

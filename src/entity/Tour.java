@@ -34,63 +34,48 @@ public class Tour {
 		data.add(id);
 		data.add(name);
 		Statement statement = connection.createStatement();
-		ResultSet rs = statement.executeQuery("select name from city where id = " + cityid + ";");
+		ResultSet rs = statement
+				.executeQuery("select name from city where id = " + cityid
+						+ ";");
 		while (rs.next()) {
 			data.add(rs.getString("name"));
 		}
 		return data;
 	}
 
-	public void addElement(int name, int cityid, Connection connection) throws SQLException {
+	public void addElement(int name, int cityid, Connection connection)
+			throws SQLException {
 		Statement statement = null;
-		try {
-			statement = connection.createStatement();
-			statement.executeUpdate("insert into tour values(nextval('tour_id_seq'), '" + name + "', " + cityid + ");");
-		} catch (SQLException e) {
-			throw new SQLException();
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
-		}
+		statement = connection.createStatement();
+		statement
+				.executeUpdate("insert into tour values(nextval('route_id_seq'), '"
+						+ name + "', " + cityid + ");");
 	}
 
-	public void removeElement(int id, Connection connection) throws SQLException {
+	public void removeElement(int id, Connection connection)
+			throws SQLException {
 		Statement statement = null;
-		try {
-			statement = connection.createStatement();
-			statement.executeUpdate("delete from tour where id = " + id + ";");
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
-		}
+		statement = connection.createStatement();
+		statement.executeUpdate("delete from tour where id = " + id + ";");
 	}
 
-	public void refreshElement(int id, int name, int cityid, Connection connection) throws SQLException {
+	public void refreshElement(int id, int name, int cityid,
+			Connection connection) throws SQLException {
 		Statement statement = null;
-		try {
-			statement = connection.createStatement();
-			statement.executeUpdate(
-					"update tour set tournumber = " + name + ", cityid = " + cityid + " where id = " + id + ";");
-		} catch (SQLException e) {
-			throw new SQLException();
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
-		}
+		statement = connection.createStatement();
+		statement.executeUpdate("update tour set tournumber = " + name
+				+ ", cityid = " + cityid + " where id = " + id + ";");
 	}
 
-	public DefaultTableModel TableModel(Connection connection) throws SQLException {
+	public DefaultTableModel TableModel(Connection connection)
+			throws SQLException {
 		Vector<String> columnNames = null;
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		DefaultTableModel tableModel = new DefaultTableModel();
 		columnNames = getTitles();
-		for (int i = 0; i <= getTable(connection).size() - 1; i++) {
-			data.add(getTable(connection).get(i).setData(connection));
+		ArrayList<Tour> tours = getTable(connection);
+		for (int i = 0; i <= tours.size() - 1; i++) {
+			data.add(tours.get(i).setData(connection));
 		}
 		tableModel.setDataVector(data, columnNames);
 		return tableModel;
@@ -109,9 +94,41 @@ public class Tour {
 		ResultSet rs = statement.executeQuery("select * from tour;");
 		ArrayList<Tour> res = new ArrayList<>();
 		while (rs.next()) {
-			res.add(new Tour((int) rs.getObject(1), (int) rs.getObject(2), (int) rs.getObject(3)));
+			res.add(new Tour((int) rs.getObject(1), (int) rs.getObject(2),
+					(int) rs.getObject(3)));
 		}
 		return res;
+	}
+
+	public void add10k(Connection connection) throws SQLException {
+		Statement stmt = connection.createStatement();
+		Tour r = new Tour();
+		int id = r.getTable(connection).size() + 1;
+		for (int i = 0; i < 10000; i++, id++) {
+			stmt.executeUpdate("insert into tour values(" + id + ", 0, 1);");
+		}
+	}
+
+	public void delete10k(Connection connection) throws SQLException {
+		Statement stmt = connection.createStatement();
+		Tour r = new Tour();
+		int id = r.getTable(connection).size();
+		for (int i = 0; id > 0 && i < 10000; id--, i++) {
+			stmt.executeUpdate("delete from tour where id = " + id + ";");
+		}
+	}
+	
+	public void createIndex(Connection connection) throws SQLException{
+		clearIndex(connection);
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("create index cityid_ind on tour (cityid);");
+		stmt.close();
+	}
+	
+	public void clearIndex(Connection connection) throws SQLException {
+		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("drop index cityid_ind;");
+		stmt.close();
 	}
 
 	public int getId() {

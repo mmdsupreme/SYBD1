@@ -7,69 +7,69 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JComboBox;
 
-import entity.City;
 import entity.Tour;
 import entity.PlaceDeparture;
 
-public class TourForm extends JFrame {
-	private Connection connection = null;
-	public int idSelected;
+public class PlacedepartureForm extends JFrame {
+	private Connection connection;
+	private int idSelected;
 	private JPanel contentPane;
 	private JTextField textField;
 	private JComboBox<String> comboBox;
-	private ArrayList<City> citys;
+	private ArrayList<Tour> tours;
 
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public TourForm(Connection connection) throws SQLException {
-		this.connection = connection;
+	public PlacedepartureForm(Connection con) throws SQLException {
 		Initiate();
+		connection = con;
 		this.idSelected = -1;
-		City g = new City();
-		citys = new ArrayList<>(g.getTable(connection));
+		Tour ph = new Tour();
+		tours = new ArrayList<>(ph.getTable(connection));
 		comboBox.removeAllItems();
-		for (int i = 0; i < citys.size(); i++) {
-			comboBox.addItem("" + citys.get(i).getName());
+		for (int i = 0; i < tours.size(); i++) {
+			comboBox.addItem("" + tours.get(i).getName());
 		}
 	}
 
-	public TourForm(int id, Connection connection) throws SQLException {
+	public PlacedepartureForm(int id, Connection con) throws SQLException {
 		Initiate();
-		int cid = 0;
-		this.connection = connection;
+		int rid = 0;
+		connection = con;
 		this.idSelected = id;
-		Tour tour = new Tour();
-		ArrayList<Tour> tours = new ArrayList<>(tour.getTable(connection));
-		tour = null;
-		for (int i = 0; i < tours.size(); i++) {
-			if (id - 1 == tours.get(i).getId() - 1) {
-				tour = tours.get(i);
+		PlaceDeparture point = new PlaceDeparture();
+		ArrayList<PlaceDeparture> points = new ArrayList<>(point.getTable(connection));
+		point = null;
+		for (int i = 0; i < points.size(); i++) {
+			if (id - 1 == points.get(i).getId() - 1) {
+				point = points.get(i);
+				break;
 			}
 		}
-		City g = new City();
-		citys = new ArrayList<>(g.getTable(connection));
+		Tour al = new Tour();
+		tours = new ArrayList<>(al.getTable(connection));
 		comboBox.removeAllItems();
-		for (int i = 0; i < citys.size(); i++) {
-			comboBox.addItem("" + citys.get(i).getName());
-			if (tour.getCityid() == citys.get(i).getId()) {
-				cid = i;
+		for (int i = 0; i < tours.size(); i++) {
+			comboBox.addItem("" + tours.get(i).getName());
+			if (point.getTourid() == tours.get(i).getId()) {
+				rid = i;
 			}
 		}
-		comboBox.setSelectedItem(citys.get(cid).getName());
-		textField.setText(tour.getName());
+		comboBox.setSelectedItem(tours.get(rid).getName());
+		textField.setText(point.getName());
 	}
 
 	private void Initiate() {
-		setTitle("\u0413\u043E\u0440\u043E\u0434");
+		setTitle("\u041E\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 324, 156);
 		contentPane = new JPanel();
@@ -77,7 +77,7 @@ public class TourForm extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel label = new JLabel("\u041D\u043E\u043C\u0435\u0440");
+		JLabel label = new JLabel("\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435");
 		label.setBounds(10, 14, 100, 14);
 		contentPane.add(label);
 
@@ -89,18 +89,18 @@ public class TourForm extends JFrame {
 		JButton button = new JButton("\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Tour tour = null;
+				PlaceDeparture point = null;
 				try {
 					if (textField.getText().length() == 0) {
 						JOptionPane.showMessageDialog(null, "Îøèáêà");
 					}
-					tour = new Tour(Integer.parseInt(textField.getText()), (comboBox.getSelectedIndex()));
+					point = new PlaceDeparture(textField.getText(), tours.get(comboBox.getSelectedIndex()).getId());
 					if (idSelected < 0) {
-						tour.addElement(Integer.parseInt(textField.getText()),
-								citys.get(comboBox.getSelectedIndex()).getId(), connection);
+						point.addElement(textField.getText(), tours.get(comboBox.getSelectedIndex()).getId(),
+								connection);
 					} else {
-						tour.refreshElement(idSelected, Integer.parseInt(textField.getText()),
-								citys.get(comboBox.getSelectedIndex()).getId(), connection);
+						point.refreshElement(idSelected, textField.getText(),
+								tours.get(comboBox.getSelectedIndex()).getId(), connection);
 					}
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -120,7 +120,7 @@ public class TourForm extends JFrame {
 		button_1.setBounds(164, 87, 134, 23);
 		contentPane.add(button_1);
 
-		JLabel label_1 = new JLabel("\u0413\u043E\u0440\u043E\u0434");
+		JLabel label_1 = new JLabel("\u041C\u0430\u0440\u0448\u0440\u0443\u0442");
 		label_1.setBounds(10, 42, 100, 14);
 		contentPane.add(label_1);
 

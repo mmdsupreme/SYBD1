@@ -51,37 +51,40 @@ public class MainForm {
 
 	@SuppressWarnings("unchecked")
 	private void initialize() {
-		String[] str = { "Турфирма", "Город", "Тур", "Место отправления", "Транспорт" };
+		String[] str = { "Турфирма", "Город", "Тур", "Место отправления",
+				"Транспорт" };
 		frame = new JFrame();
 		frame.setBounds(100, 100, 600, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		table = new JTable();
 		ComboBox = new JComboBox(str);
-		ComboBox.setBounds(150, 350, 133, 23);
+		ComboBox.setBounds(150, 380, 133, 23);
 		ComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Refresh();
+				refresh();
 			}
 		});
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(ComboBox);
 
-		JButton button = new JButton("Подключить");
+		JButton button = new JButton(
+				"Подключить");
 		button.setBounds(10, 350, 133, 23);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ConnectionForm form = new ConnectionForm(frame);
 				connection = form.getConnection();
 				if (connection != null) {
-					Refresh();
+					refresh();
 				}
 			}
 		});
 		frame.getContentPane().add(button);
 
-		JButton button_1 = new JButton("Отключить");
-		button_1.setBounds(10, 380, 133, 23);
+		JButton button_1 = new JButton(
+				"Отключить");
+		button_1.setBounds(150, 350, 133, 23);
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Disconnect();
@@ -89,7 +92,8 @@ public class MainForm {
 		});
 		frame.getContentPane().add(button_1);
 
-		JButton button_3 = new JButton("Изменить");
+		JButton button_3 = new JButton(
+				"Изменить");
 		button_3.setBounds(430, 350, 133, 23);
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -100,12 +104,13 @@ public class MainForm {
 						try {
 							TourFirma al = new TourFirma();
 							int i = al.getTable(connection).get(idEl).getId();
-							TourFirmaForm form1 = new TourFirmaForm(i, connection);
+							TourfirmaForm form1 = new TourfirmaForm(
+									i, connection);
 							form1.setVisible(true);
 							TourFirma g = new TourFirma();
 							table.setModel(g.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Город":
@@ -114,10 +119,9 @@ public class MainForm {
 							int i = al.getTable(connection).get(idEl).getId();
 							CityForm form2 = new CityForm(i, connection);
 							form2.setVisible(true);
-							City a = new City();
-							table.setModel(a.TableModel(connection));
+							table.setModel(al.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Тур":
@@ -129,30 +133,32 @@ public class MainForm {
 							Tour exh = new Tour();
 							table.setModel(exh.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Место отправления":
 						try {
 							PlaceDeparture al = new PlaceDeparture();
 							int i = al.getTable(connection).get(idEl).getId();
-							PlaceDepartureForm form4 = new PlaceDepartureForm(i, connection);
+							PlacedepartureForm form4 = new PlacedepartureForm(i,
+									connection);
 							form4.setVisible(true);
 							table.setModel(al.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Транспорт":
 						try {
 							Transport al = new Transport();
 							int i = al.getTable(connection).get(idEl).getId();
-							TransportForm form5 = new TransportForm(i, connection);
+							TransportForm form5 = new TransportForm(i,
+									connection);
 							form5.setVisible(true);
 							Transport p = new Transport();
 							table.setModel(p.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					}
@@ -163,12 +169,14 @@ public class MainForm {
 		});
 		frame.getContentPane().add(button_3);
 
-		JButton button_4 = new JButton("Удалить");
+		JButton button_4 = new JButton(
+				"Удалить");
 		button_4.setBounds(430, 380, 133, 23);
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (table.getSelectedRow() >= 0 && connection != null) {
-					int idEl = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
+					int idEl = Integer.parseInt(table.getValueAt(
+							table.getSelectedRow(), 0).toString());
 					switch ((String) ComboBox.getSelectedItem()) {
 					case "Турфирма":
 						try {
@@ -176,7 +184,7 @@ public class MainForm {
 							g.removeElement(idEl, connection);
 							table.setModel(g.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Город":
@@ -185,7 +193,7 @@ public class MainForm {
 							a.removeElement(idEl, connection);
 							table.setModel(a.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Тур":
@@ -194,7 +202,7 @@ public class MainForm {
 							exh.removeElement(idEl, connection);
 							table.setModel(exh.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Место отправления":
@@ -203,7 +211,7 @@ public class MainForm {
 							al.removeElement(idEl, connection);
 							table.setModel(al.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Транспорт":
@@ -212,7 +220,7 @@ public class MainForm {
 							p.removeElement(idEl, connection);
 							table.setModel(p.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					}
@@ -223,7 +231,8 @@ public class MainForm {
 		});
 		frame.getContentPane().add(button_4);
 
-		JButton button_5 = new JButton("Добавить");
+		JButton button_5 = new JButton(
+				"Добавить");
 		button_5.setBounds(290, 350, 133, 23);
 		button_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -231,12 +240,13 @@ public class MainForm {
 					switch ((String) ComboBox.getSelectedItem()) {
 					case "Турфирма":
 						try {
-							TourFirmaForm form1 = new TourFirmaForm(connection);
+							TourfirmaForm form1 = new TourfirmaForm(
+									connection);
 							form1.setVisible(true);
 							TourFirma g = new TourFirma();
 							table.setModel(g.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Город":
@@ -246,7 +256,7 @@ public class MainForm {
 							City a = new City();
 							table.setModel(a.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Тур":
@@ -257,13 +267,13 @@ public class MainForm {
 							Tour exh = new Tour();
 							table.setModel(exh.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					case "Место отправления":
 						try {
-							PlaceDepartureForm form4;
-							form4 = new PlaceDepartureForm(connection);
+							PlacedepartureForm form4;
+							form4 = new PlacedepartureForm(connection);
 							form4.setVisible(true);
 							PlaceDeparture al = new PlaceDeparture();
 							table.setModel(al.TableModel(connection));
@@ -279,7 +289,7 @@ public class MainForm {
 							Transport p = new Transport();
 							table.setModel(p.TableModel(connection));
 						} catch (SQLException ex) {
-							Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+							JOptionPane.showMessageDialog(null, ex.getMessage());
 						}
 						break;
 					}
@@ -295,14 +305,25 @@ public class MainForm {
 		table = new JTable();
 		scrollPane.setViewportView(table);
 
-		JButton button_2 = new JButton("Обновить");
+		JButton button_2 = new JButton(
+				"Обновить");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Refresh();
+				refresh();
 			}
 		});
 		button_2.setBounds(290, 380, 133, 23);
 		frame.getContentPane().add(button_2);
+
+		JButton button_6 = new JButton("Генератор");
+		button_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TestForm form = new TestForm(connection);
+				form.setVisible(true);
+			}
+		});
+		button_6.setBounds(10, 380, 133, 23);
+		frame.getContentPane().add(button_6);
 	}
 
 	private void Disconnect() {
@@ -312,7 +333,7 @@ public class MainForm {
 		}
 	}
 
-	private void Refresh() {
+	private void refresh() {
 		if (connection != null) {
 			switch ((String) ComboBox.getSelectedItem()) {
 			case "Турфирма":
@@ -320,7 +341,7 @@ public class MainForm {
 					TourFirma g = new TourFirma();
 					table.setModel(g.TableModel(connection));
 				} catch (SQLException ex) {
-					Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				break;
 			case "Город":
@@ -328,7 +349,7 @@ public class MainForm {
 					City a = new City();
 					table.setModel(a.TableModel(connection));
 				} catch (SQLException ex) {
-					Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				break;
 			case "Тур":
@@ -336,7 +357,7 @@ public class MainForm {
 					Tour exh = new Tour();
 					table.setModel(exh.TableModel(connection));
 				} catch (SQLException ex) {
-					Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				break;
 			case "Место отправления":
@@ -344,7 +365,7 @@ public class MainForm {
 					PlaceDeparture al = new PlaceDeparture();
 					table.setModel(al.TableModel(connection));
 				} catch (SQLException ex) {
-					Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				break;
 			case "Транспорт":
@@ -352,7 +373,7 @@ public class MainForm {
 					Transport p = new Transport();
 					table.setModel(p.TableModel(connection));
 				} catch (SQLException ex) {
-					Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				break;
 			}

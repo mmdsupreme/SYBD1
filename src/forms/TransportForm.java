@@ -30,7 +30,7 @@ public class TransportForm extends JFrame {
 	private JComboBox<String> comboBox;
 	private JComboBox<String> comboBox_1;
 	private ArrayList<Tour> tours;
-	private ArrayList<TourFirma> tourfirms;
+	private ArrayList<TourFirma> autos;
 
 	/**
 	 * @wbp.parser.constructor
@@ -40,10 +40,10 @@ public class TransportForm extends JFrame {
 		this.connection = connection;
 		this.idSelected = -1;
 		TourFirma au = new TourFirma();
-		tourfirms = new ArrayList<>(au.getTable(connection));
+		autos = new ArrayList<>(au.getTable(connection));
 		comboBox.removeAllItems();
-		for (int i = 0; i < tourfirms.size(); i++) {
-			comboBox.addItem("" + tourfirms.get(i).getName());
+		for (int i = 0; i < autos.size(); i++) {
+			comboBox.addItem("" + autos.get(i).getName());
 		}
 		Tour exh = new Tour();
 		tours = new ArrayList<>(exh.getTable(connection));
@@ -70,11 +70,11 @@ public class TransportForm extends JFrame {
 			}
 		}
 		TourFirma au = new TourFirma();
-		tourfirms = new ArrayList<>(au.getTable(connection));
+		autos = new ArrayList<>(au.getTable(connection));
 		comboBox.removeAllItems();
-		for (int i = 0; i < tourfirms.size(); i++) {
-			comboBox.addItem("" + tourfirms.get(i).getName());
-			if (transport.getTourfirmaid() == tourfirms.get(i).getId()) {
+		for (int i = 0; i < autos.size(); i++) {
+			comboBox.addItem("" + autos.get(i).getName());
+			if (transport.getTourfirmaid() == autos.get(i).getId()) {
 				aid = i;
 			}
 		}
@@ -83,18 +83,18 @@ public class TransportForm extends JFrame {
 		comboBox_1.removeAllItems();
 		for (int i = 0; i < tours.size(); i++) {
 			comboBox_1.addItem("" + tours.get(i).getName());
-			if (transport.getRouteid() == tours.get(i).getId()) {
+			if (transport.getTourid() == tours.get(i).getId()) {
 				rid = i;
 			}
 		}
 		textField.setText(transport.getGosnumber());
 		textField_1.setText(transport.getType());
-		comboBox.setSelectedItem(tourfirms.get(aid).getName());
+		comboBox.setSelectedItem(autos.get(aid).getName());
 		comboBox_1.setSelectedItem(tours.get(rid).getName());
 	}
 
 	private void Initiate() {
-		setTitle("Транспорт");
+		setTitle("\u0422\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 324, 202);
 		contentPane = new JPanel();
@@ -103,7 +103,7 @@ public class TransportForm extends JFrame {
 		contentPane.setLayout(null);
 
 		JLabel label = new JLabel(
-				"Модель");
+				"\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435");
 		label.setBounds(10, 14, 100, 14);
 		contentPane.add(label);
 
@@ -122,18 +122,18 @@ public class TransportForm extends JFrame {
 				}
 				try {
 					transport = new Transport(textField.getText(), textField_1
-							.getText(), (comboBox.getSelectedIndex() + 1),
-							(comboBox_1.getSelectedIndex() + 1));
+							.getText(), (comboBox.getSelectedIndex()),
+							(comboBox_1.getSelectedIndex()));
 					if (idSelected < 0) {
 						transport.addElement(textField.getText(), textField_1
 								.getText(),
-								tourfirms.get(comboBox.getSelectedIndex()).getId(),
+								autos.get(comboBox.getSelectedIndex()).getId(),
 								tours.get(comboBox_1.getSelectedIndex())
 										.getId(), connection);
 					} else {
 						transport.refreshElement(idSelected, textField
 								.getText(), textField_1.getText(),
-								tourfirms.get(comboBox.getSelectedIndex()).getId(),
+								autos.get(comboBox.getSelectedIndex()).getId(),
 								tours.get(comboBox_1.getSelectedIndex())
 										.getId(), connection);
 					}
@@ -157,7 +157,7 @@ public class TransportForm extends JFrame {
 		contentPane.add(button_1);
 
 		JLabel label_1 = new JLabel(
-				"Турфирма");
+				"\u041F\u0440\u0435\u0434\u043F\u0440\u0438\u044F\u0442\u0438\u0435");
 		label_1.setBounds(10, 67, 100, 14);
 		contentPane.add(label_1);
 
@@ -166,7 +166,7 @@ public class TransportForm extends JFrame {
 		contentPane.add(comboBox);
 
 		JLabel label_2 = new JLabel(
-				"Тур №");
+				"\u041C\u0430\u0440\u0448\u0440\u0443\u0442");
 		label_2.setBounds(10, 92, 100, 14);
 		contentPane.add(label_2);
 

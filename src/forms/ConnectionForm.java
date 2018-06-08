@@ -148,7 +148,7 @@ public class ConnectionForm extends JDialog {
 		}
 	}
 
-	public void Disconnect() {
+	public void disconnect() {
 		try {
 			connection.close();
 			JOptionPane.showMessageDialog(null, "Соеденение закрыто");
